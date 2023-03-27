@@ -10,3 +10,6 @@ The main project contains several main parts:</h3>
 
 <br><br>
 The goal is to create a hardware and a software reliable enough to allow a sound system in an open space. The organization has a strong desire to develop its own technologies and to use only low-level features to allow for greater flexibility in optimization and development.
+
+<br>
+I suggest that you consult our wiki for more information: <link>https://github.com/Arthurmaffre34/RMBP/wiki
