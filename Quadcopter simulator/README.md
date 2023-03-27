@@ -1,3 +1,4 @@
-Ce programme permet d'entrainer le modèle de stabilisation du quadcopter.
-Le moteur du simulateur est un projet Unity (image prochainement...)
-\nIl faut utiliser le programme train.py. Ce programme produit un pont TCP entre le projet Unity et le programme python qui entraine le modèle.
+This program allows to train the stabilization model of the quadcopter.
+The engine of the simulator is a Unity project (image soon...)
+
+You have to use the train.py program. This program produces a TCP bridge between the Unity project and the python program that trains the model.
