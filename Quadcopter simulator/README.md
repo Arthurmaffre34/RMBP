@@ -31,3 +31,6 @@ We recommend you to use version 3.9 of python, to install the necessary librarie
 
 Now you can simply run the Python train program
 `python3 train.py`
+
+<br>
+For more technical information on how Quadcoper Simulator works, I invite you to consult the wiki! <link>https://github.com/Arthurmaffre34/RMBP/wiki
