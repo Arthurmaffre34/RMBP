@@ -9,7 +9,7 @@ You have to use the train.py program and the Unity project at the same time, the
 
 You have to install Unity from internet, the free version is enough. Then when you are in the hub you must import this file as a project. You can upgrade the project version if it is not up to date, this should not cause any compatibility problem.
 
-Then all you have to do is to launch the arrow, if the quadcopter starts flying around it is normal, this means that the simulator is running. The Unity project works like a TCP server, you have to launch the engine <b>before</b> the Python program to make them work. Now you have to install the python program.
+Then all you have to do is to launch at the arrow, if the quadcopter starts flying around it is normal, this means that the simulator is running. The Unity project works like a TCP server, you have to launch the engine <b>before</b> the Python program to make them work. Now you have to install the python program.
 
 <h3>Python train.py</h3>
 
