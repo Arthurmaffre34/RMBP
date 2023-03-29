@@ -3,7 +3,7 @@ import socket
 import time
 import numpy as np
 import torch
-import gym
+#import gym
 import os
 
 from ascii_magic import AsciiArt
@@ -14,18 +14,22 @@ os.system("clear") if os.name == 'posix' else os.system("cls")
 art.tprint("RMBP", "rnd-xlarge") 
 art.tprint(".inc")
 
-AsciiArt.from_dalle('a quadcopter', "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").to_terminal(columns=40) #dall_e
+#AsciiArt.from_dalle('a quadcopter', "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").to_terminal(columns=40) #dall_e
 
 version = "0.1"
 PORT = 5697
 
-class Networking(): #class that use to make connection to simulator
-    def __init__(self):
+class Networking: #class that use to make connection to simulator
+
+    #mess type 1 = command train to simulator, 2 = reset state function train to simulator, 3 = informations from simulator to train
+
+    def __init__(self, address = 5697, PORT = "localhost"): #default adress localhost, default port 5697
         #super((Networking, self).__init__())
 
         self.client = socket.socket(socket.self.AF_INET, socket.self.SOCK_STREAM)
-        self.PORT = 5697
-        self.address = "localhost"
+        self.PORT = PORT
+        self.address = address
+        self.fly_inf = []
 
     def connect(self, PORT, address):
         while True:
@@ -38,14 +42,37 @@ class Networking(): #class that use to make connection to simulator
                 print("connection failed, retrying...")
                 time.sleep(0.5)
 
-    def send_inf_to_sim(self, client, packet): #packet is a list of information that reset the inv
-        packet = str(packet).encode()
+    def close(self):
+        self.client.close()
+
+    def encode(self, mess_type, mess): #mess type 1 = command, 2 = reset fonction
+        message = f"{mess_type}{len(mess):04}{mess}"
+        return mess.encode('utf-8')
+    
+    def decode(self, data):
+        mess_type = data[:1].decode('utf-8')
+        longueur_contenu = int(data[1:5].decode('utf-8'))
+        mess = data[5:].decode('utf-8')
+        return mess_type, mess
+
+    def send_inf_to_sim(self, client, packet): #packet is a list of information that reset the inv     mess_type = 2
+        packet = self.encode(2, packet)
         client.send(packet)
         print("send instruction to simulator")
 
-    def receive_inf_from_sim(self, client):
-        pass
-        #receive packet 
+    def send_command_to_sim(self, command):
+        packet = self.encode(1, command)
+        client.send(packet)
+        print("send command to simulator")
+
+    def receive_inf_from_sim(self):
+        data = self.client.recv(1024)
+        if mess:
+            mess_type, mess = self.decode(data)
+            if mess_type == 3:
+                self.fly_inf = mess #have to set all information into a list
+            return mess_type, mess
+        return None, None
 
 
 
@@ -86,35 +113,6 @@ class Env(gym.Env): #ENV for A2C model training
     def step(self):
         pass #make a fuction that receive the packets
 
-    
-
-
-
-
-
-
-
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-def connection(server_address = ('localhost', PORT)):
-    
-    while True:
-        try:
-            print("connecting to server at %s", PORT)
-            client.connect(server_address)
-            print("server connected")
-            break
-        except socket.error:
-            print("connection failed, retrying...")
-            time.sleep(0.5)
-
-
-
-
-def send_inf_to_sim(packet = (1, 1, 1)): 
-    #send a packet to init the simulator packet = (reset(0=no, 1=yes, 2=rdmpos), mass(kg), maxthrust(kg))
-    packet = str(packet).encode()
-    client.send(packet)
-    print("send instruction to simulator")
 
 
 
@@ -131,15 +129,6 @@ if input("initialization of the connection? (" + "\033[92m" + "y " + "\033[0m" +
 #connection_test.connect()
 #connection()
 
-
-while True:
-    send_inf_to_sim()
-    time.sleep(0.01)
-        
-
-
-
-
-
-
+client = Networking()
+client.connect()
 
