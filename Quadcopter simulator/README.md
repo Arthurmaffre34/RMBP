@@ -11,21 +11,21 @@ You have to install Unity from internet, the free version is enough. Then when y
 
 Then all you have to do is to launch at the arrow, if the quadcopter starts flying around it is normal, this means that the simulator is running. The Unity project works like a TCP server, you have to launch the engine <b>before</b> the Python program to make them work. Now you have to install the python program.
 
-<h3>Python train.py</h3>
+<h3>Python Python/train.py</h3>
 
 ***
 
 <h4>for Conda user</h4>
 
-create a python 3.9 environment to operate the machine learning libraries and install librairies (Pytorch). The name of the conda env is quadcopter_simulator
+import the python 3.9 environment to operate the machine learning libraries and install librairies (Pytorch). The name of the conda env is Quadcopter_simulator, you have to import it with the following command:
 
-`conda create -n quadcopter_simulator python=3.9 pytorch`
+`conda env create -f Quadcopter_simulator_env_conda.yml`
 
 <h4>for only Python user</h4>
 
 We recommend you to use version 3.9 of python, to install the necessary libraries you can enter:
 
-`pip3 install -y pytorch`
+`pip3 install -y numpy pytorch art`
 
 ***
 
