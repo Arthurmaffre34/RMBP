@@ -1,4 +1,4 @@
-name: Quadcopter_simulator
+name: Quadcopter_simulator_env_conda
 channels:
   - defaults
 dependencies:
