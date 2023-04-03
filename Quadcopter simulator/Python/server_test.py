@@ -5,24 +5,27 @@ def main():
     PORT = 5697
 
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
     server.bind((host, PORT))
 
     server.listen(10)
-    mess ="853349"
+    mess ="bonjour"
     print("le serveur écoute sur l'adresse {host} et le port {PORT}")
 
-    client_address = None
+    client_socket, client_address = server.accept()
+    print("connected")
+    
     while True:
-        print("i")
-        if client_address is None:
-            client_socket, client_address = server.accept()
-        if client_address is not None:
-            print("connected")
-            data = f"{3}{len(mess):03}{mess}"
-            print(data.encode())
-            client_socket.sendall(data.encode())
-            #data = client_socket.recv(1024).decode('utf-8')
-            #if data:
-            #    print("data receive from client: {data}")
+        
+        data = f"{3}{len(mess):03}{mess}"
+        #print(data.encode())
+        #client_socket.sendall(data.encode())
+        try:
+            data = None
+            data = client_socket.recv(1024).decode('utf-8')
+            print(data)
+        except:
+            continue
 
 main()

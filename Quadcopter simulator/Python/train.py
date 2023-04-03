@@ -3,6 +3,7 @@ import socket
 import time
 import numpy as np
 import torch
+import torch.nn as nn
 import gym
 import os
 
@@ -60,20 +61,20 @@ class Networking: #class that use to make connection to simulator
         mess = data[4:].decode('utf-8')
         return mess_type, mess
 
-    def send_inf_to_sim(self, client, packet): #packet is a list of information that reset the inv     mess_type = 2
+    def send_inf_to_sim(self, packet): #packet is a list of information that reset the inv     mess_type = 2
         packet = self.encode(2, packet)
-        client.send(packet)
+        self.client.send(packet)
         print("send instruction to simulator")
 
     def send_command_to_sim(self, command):
         packet = self.encode(1, command)
-        client.send(packet)
+        self.client.send(packet)
         print("send command to simulator")
 
     def receive_inf_from_sim(self):
         data = None
         try:
-            data = self.client.recv(4096)
+            data = self.client.recv(40960)
         except:
             print("error")
         print(data)
@@ -114,17 +115,56 @@ class Env(gym.Env): #ENV for A2C model training
         self.mass = 1 #mass is kg
         self.maxthrust = 2 #maxthrust in kg
 
+        Networking.connect() #connect to sim
+
     
 
     def reset(self, reset_pos, mass, maxthrust):
         
         Networking.send_inf_to_sim(packet=[reset_pos, mass, maxthrust]) #reset the env and the simulator
 
-    def step(self):
-        pass #make a fuction that receive the packets
+    def step(self, action):
+        self.inputshape = Networking.receive_inf_from_sim()
+
+        Networking.send_inf_to_sim(action)
+
+    def close(self):
+        Networking.close()
 
 
 
+
+
+
+
+class Actor(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super(Actor, self).__init__()
+        self.network = nn.Sequential(nn.Linear(input_size, hidden_size), 
+                                     nn.Relu(), nn.Linear(hidden_size, output_size),
+                                     nn.Tanh()
+                                     )
+        
+    def forward(self, state):
+        return self.network(state)
+    
+class Critic(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super(Critic, self).__init__()
+        self.network = nn.Sequential(
+            nn.Linear(input_size, hidden_size),
+            nn.ReLU(),
+            nn.Linear(hidden_size, output_size)
+        )
+
+    def forward(self, state):
+        return self.network(state)
+    
+class A2C:
+    def __init__(self, input_size, hidden_size, output_size, learning_rate=1e-3, gamma=0.99):
+        self.actor = Actor(input_size, hidden_size, output_size)
+        
+    
 
 
 
